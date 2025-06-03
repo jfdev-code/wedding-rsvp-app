@@ -1,8 +1,8 @@
 const express = require('express');
-const mongoose = require('mongoose');
 const cors = require('cors');
 const guestRoutes = require('./routes/api');
 const path = require('path');
+const { Pool } = require('pg');
 
 const app = express();
 
@@ -10,15 +10,11 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-// MongoDB Connection
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-})
-.then(() => console.log('MongoDB connected'))
-.catch(err => console.error(err));
+// PostgreSQL Connection
+const pool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+});
 
-// Routes
 app.use('/api', guestRoutes);
 
 // Serve static frontend files
